@@ -3,13 +3,26 @@
 </template>
 
 <script>
-import {wrapNodeOfTypeWithTypeCommand} from './helpers'
+import { wrapNodeOfTypeWithTypeCommand, ComponentUpdateNode } from "./helpers";
+
+const commands = {
+  insertGrid: args => (state, dispatch, editorView) =>
+    wrapNodeOfTypeWithTypeCommand(
+      state.schema.nodes.paragraph,
+      state.schema.nodes.grid,
+      args
+    )(state, dispatch, editorView)
+};
+
+const isActive = {
+  insertGrid: state => false
+};
 
 export default {
   name: "pm-grid",
   props: {
     mode: String,
-    col: Object,
+    col: Object
   },
   computed: {
     rootComponent: function() {
@@ -32,18 +45,37 @@ export default {
     }
   },
   spec: {
-      commands: {
-          insertGrid: (args) => (state, dispatch, editorView) => wrapNodeOfTypeWithTypeCommand(state.schema.nodes.paragraph, state.schema.nodes.grid, args)(state, dispatch, editorView),
+    menuItems: {
+      insertRow: {
+        type: "btn",
+        title: "Insert Row",
+        icon: "mdi-view-agenda",
+        command: commands.insertGrid({
+          mode: "row"
+        }),
+        update: ComponentUpdateNode,
+        isActive: false,
+        isVisible: false
       },
-      isActive: {
-          insertGrid: (state) => (false),
-      },
+      insertColumn: {
+        type: "btn",
+        title: "Insert Column",
+        icon: "mdi-view-column",
+        command: commands.insertGrid({
+          mode: "column",
+          col: { sm: 12 }
+        }),
+        update: ComponentUpdateNode,
+        isActive: false,
+        isVisible: false
+      }
+    }
   },
   nodes: {
     grid: {
       attrs: {
         mode: { default: "row" },
-        col: { default: null },
+        col: { default: null }
       },
       content: "block+",
       group: "block",
@@ -51,28 +83,28 @@ export default {
       parseDOM: [
         {
           tag: 'div[class="row"][data-parser-id="pm-grid"]',
-          getAttrs: (dom) => {
-              return {
-                  mode: 'row',
-              }
-          },
+          getAttrs: dom => {
+            return {
+              mode: "row"
+            };
+          }
         },
         {
           tag: 'div[class^="col-"][data-parser-id="pm-grid"]',
-          getAttrs: (dom) => {
-              return {
-                  mode: 'column',
-              }
-          },
-        },
+          getAttrs: dom => {
+            return {
+              mode: "column"
+            };
+          }
+        }
       ],
-      toDOM: (node) => ([
+      toDOM: node => [
         "pm-grid",
-          {
-            props: node.attrs
-          },
-          0
-      ]),
+        {
+          ...node.attrs
+        },
+        0
+      ]
     }
   }
 };

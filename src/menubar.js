@@ -22,21 +22,17 @@ export default class MenuBar {
         this.update();
     }
 
-    onClick(command, args = null) {
-        if (!args) {
-            command(
-                this.editorView.state,
-                this.editorView.dispatch,
-                this.editorView
-            );
-        } else {
-            command(args)(
-                this.editorView.state,
-                this.editorView.dispatch,
-                this.editorView
-            )
+    dispatchCommand(command, args = null, focuse = true) {
+        const command_ref = args ? command(args) : command;
+        command_ref(
+            this.editorView.state,
+            this.editorView.dispatch,
+            this.editorView
+        );
+
+        if (focuse) {
+            this.editorView.focus();
         }
-        this.editorView.focus();
     }
 
     isVisible(command) {

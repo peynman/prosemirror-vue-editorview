@@ -18,7 +18,18 @@ mix.config.webpackConfig.output = {
 mix.js('src/index.js', '/js')
     .extract([
         'vue',
-        'vue-template-compiler',
+        'vuetify',
+        'prosemirror-commands',
+        'prosemirror-history',
+        'prosemirror-keymap',
+        'prosemirror-model',
+        'prosemirror-schema-basic',
+        'prosemirror-schema-list',
+        'prosemirror-state',
+        'prosemirror-tables',
+        'prosemirror-transform',
+        'prosemirror-utils',
+        'prosemirror-view',
     ]).setPublicPath('dist/');
 
 
@@ -31,6 +42,12 @@ mix.sass('sass/prosemirror.scss', 'dist/css')
 if (mix.inProduction()) {
     mix.version();
 } else {
+    mix.webpackConfig({
+        devServer: {
+            contentBase: [path.join(__dirname, 'examples'), path.join(__dirname, 'dist')],
+            port: 9000,
+        }
+    });
 }
 
 mix.disableNotifications();

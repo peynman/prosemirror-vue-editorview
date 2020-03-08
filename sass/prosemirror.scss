@@ -1,0 +1,27 @@
+.prosemirror-text-field {
+    max-width: 80px !important;
+}
+
+.prosemirror-text-field .v-input__control,
+.v-text-field__slot {
+    height: 30px;
+}
+
+a .prosemirror-text-field .v-input__prepend-outer .v-icon {
+    font-size: 16px;
+}
+
+.prosemirror-text-field .v-input__control input {
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+}
+
+.prosemirror-wrapper {
+    display: inline;
+    height: 100%;
+}
+
+.prosemirror-wrapper .prosemirror-editor {
+    height: 100%;
+}

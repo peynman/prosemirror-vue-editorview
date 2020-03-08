@@ -10,8 +10,8 @@ export const updateAttrOfNodeOfTypeCommand = (targetNode, args) => {
     return (state, dispatch, editorView) => {
         if (state.selection.empty) {
             const search = findParentNodeOfType(targetNode)(state.selection)
-            console.log('update', targetNode, state, dispatch, editorView, args, search);
             if (dispatch && search && search.node) {
+                // console.log('updateAttrOfNodeOfTypeCommand setBlockType', targetNode, state, dispatch, editorView, args, search);
                 return setBlockType(search.node.type, {
                     ...search.node.attrs,
                     ...args
@@ -29,12 +29,11 @@ export const updateAttrOfNodeOfTypeCommand = (targetNode, args) => {
 
 export const setNodeOfTypeToNewTypeCommand = (targetNode, nodeType, args) => {
     return (state, dispatch, editorView) => {
-        console.log('setNodeOfTypeToNewTypeCommand', targetNode, nodeType, state);
+        // console.log('setNodeOfTypeToNewTypeCommand', targetNode, nodeType, state);
         if (state.selection.empty) {
             const search = findParentNodeOfType(targetNode)(state.selection)
-            console.log('setBlockType', state, dispatch, editorView, nodeType, args, targetNode, search);
             if (dispatch && search && search.node) {
-                console.log('setBlockType', state, dispatch, editorView, nodeType, args);
+                // console.log('setNodeOfTypeToNewTypeCommand setBlockType', state, dispatch, editorView, nodeType, args, targetNode, search);
                 return setBlockType(nodeType, {
                     ...args
                 })(state, dispatch, editorView);
@@ -52,9 +51,8 @@ export const setNodeOfTypeToNewTypeCommand = (targetNode, nodeType, args) => {
 export const wrapNodeOfTypeWithTypeCommand = (targetNode, nodeType, args) => {
     return (state, dispatch, editorView) => {
         if (state.selection.empty) {
-            console.log('wrapt', targetNode, nodeType.name);
             const search = findParentNodeOfType(targetNode)(state.selection)
-            console.log('wrapt', search, state);
+                // console.log('wrapt', targetNode, nodeType, search, state);
             if (dispatch && search && search.node) {
                 return wrapIn(
                     nodeType, {
@@ -117,3 +115,25 @@ export function getRandomString(len) {
     }
     return result;
 }
+
+export function ComponentUpdateNode(item, state, dispatch, editorView) {
+    item.isVisible = item.value !== undefined ?
+        item.command(item.value)(state, dispatch, editorView) :
+        item.command(state, dispatch, editorView);
+    if (item.updateValueCallback) {
+        let newVal = item.updateValueCallback(state);
+        if (item.type === "color") {
+            if (newVal === null) {
+                newVal = '';
+            }
+            if (newVal) {
+                item.value = newVal;
+                item.color = newVal;
+            }
+        }
+        item.value = newVal;
+    }
+    if (item.isActiveCallback) {
+        item.isActive = item.isActiveCallback(state);
+    }
+};
